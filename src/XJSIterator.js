@@ -2,31 +2,13 @@ var XJSIterator = ( function ( ) {
     'use strict';
     // constructor
     function XJSIterator( items ) {
-        if ( ! this instanceof XJSIterator ) {
-            return new XJSIterator( items );
-        } else {
-            items = Array.prototype.slice.apply( items );// ++ Array.toArray?
-            var index = 0;
-            Object.defineProperties( this, {
-                index: {
-                    get: function ( ) {
-                        return index;
-                    },
-                    set: function ( value ) {
-                        index = +value;// ++ return something?
-                    },
-                    enumerable: true
-                },
-                items: {
-                    value: Object.freeze( items ),
-                    enumerable: true
-                }
-            } );
-            return Object.freeze( this );
-        }
+        items = Array.toArray( items );
+        this.index = 0;
+        this.items = items;
+        return this;
     }
     // prototype
-    Object.freeze( Object.defineProperties( XJSIterator.prototype, {
+    Object.defineProperties( XJSIterator.prototype, {
         clone: {
             value: function ( sameIndex ) {
                 var clone = new this.constructor( this.items );
@@ -85,7 +67,7 @@ var XJSIterator = ( function ( ) {
             },
             enumerable: true
         }
-    } ) );
+    } );
     // expose
-    return Object.freeze( XJSIterator );
+    return XJSIterator;
 } )( );

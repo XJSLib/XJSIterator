@@ -2,58 +2,54 @@ var XJSStringIterator = ( function ( ) {
     'use strict';
     // constructor
     function XJSStringIterator( string ) {
-        string = string.toString( );
-        if ( this instanceof XJSStringIterator ) {
-            Object.defineProperties( this, {
-                string: {
-                    value: string,
-                    enumerable: true
+        string = string + '';
+        Object.defineProperties( this, {
+            string: {
+                value: string,
+                enumerable: true
+            },
+            newLinesStartIndex: {
+                get: function ( ) {
+                    calculateNewLinesIndex( );
+                    return newLinesStartIndex;
                 },
-                newLinesStartIndex: {
-                    get: function ( ) {
-                        calculateNewLinesIndex( );
-                        return newLinesStartIndex;
-                    },
-                    enumerable: true
+                enumerable: true
+            },
+            newLinesEndIndex: {
+                get: function ( ) {
+                    calculateNewLinesIndex( );
+                    return newLinesEndIndex;
                 },
-                newLinesEndIndex: {
-                    get: function ( ) {
-                        calculateNewLinesIndex( );
-                        return newLinesEndIndex;
-                    },
-                    enumerable: true
-                },
-                lineIndex: {
-                    get: function ( ) {
-                        var linesEndIndex = this.linesEndIndex;
-                        var index = this.index;
-                        for ( var length = linesEndIndex.length; lineIndex < length; ++lineIndex ) {
-                            if ( linesEndIndex[ lineIndex ] >= index ) {
-                                break;
-                            }
+                enumerable: true
+            },
+            lineIndex: {
+                get: function ( ) {
+                    var linesEndIndex = this.linesEndIndex;
+                    var index = this.index;
+                    for ( var length = linesEndIndex.length; lineIndex < length; ++lineIndex ) {
+                        if ( linesEndIndex[ lineIndex ] >= index ) {
+                            break;
                         }
-                        return lineIndex;
-                    },
-                    enumerable: true
-                }
+                    }
+                    return lineIndex;
+                },
+                enumerable: true
+            }
+        } );
+        var newLinesStartIndex = [ ];
+        var newLinesEndIndex = [ ];
+        var calculateNewLinesIndex = function ( ) {
+            string.replace( /\r\n|\r|\n/g, function ( match, index ) {
+                newLinesStartIndex.push( index );
+                newLinesEndIndex.push( index + match.length );
+                return match;
             } );
-            var newLinesStartIndex = [ ];
-            var newLinesEndIndex = [ ];
-            var calculateNewLinesIndex = function ( ) {
-                string.replace( /\r\n|\r|\n/g, function ( match, index ) {
-                    newLinesStartIndex.push( index );
-                    newLinesEndIndex.push( index + match.length );
-                    return match;
-                } );
-                Object.freeze( newLinesStartIndex );
-                Object.freeze( newLinesEndIndex );
-                calculateNewLinesIndex = function ( ) { };
-            };
-            var lineIndex = 0;
-            return XJSIterator.call( this, string.split( '' ) );
-        } else {
-            return new XJSStringIterator( string );
-        }
+            Object.freeze( newLinesStartIndex );
+            Object.freeze( newLinesEndIndex );
+            calculateNewLinesIndex = function ( ) { };
+        };
+        var lineIndex = 0;
+        return XJSIterator.call( this, string.split( '' ) );
     }
     // prototype
     XJSStringIterator.prototype = Object.create( XJSIterator.prototype, {

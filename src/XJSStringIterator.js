@@ -3,11 +3,8 @@ var XJSStringIterator = ( function ( ) {
     // constructor
     function XJSStringIterator( string ) {
         string = string + '';
+        this.string = string;
         Object.defineProperties( this, {
-            string: {
-                value: string,
-                enumerable: true
-            },
             newLinesStartIndex: {
                 get: function ( ) {
                     calculateNewLinesIndex( );
@@ -44,8 +41,6 @@ var XJSStringIterator = ( function ( ) {
                 newLinesEndIndex.push( index + match.length );
                 return match;
             } );
-            Object.freeze( newLinesStartIndex );
-            Object.freeze( newLinesEndIndex );
             calculateNewLinesIndex = function ( ) { };
         };
         var lineIndex = 0;
@@ -93,13 +88,13 @@ var XJSStringIterator = ( function ( ) {
         },
         linesStartIndex: {
             get: function ( ) {
-                return Object.freeze( [ 0 ].concat( this.newLinesEndIndex ) );
+                return [ 0 ].concat( this.newLinesEndIndex );
             },
             enumerable: true
         },
         linesEndIndex: {
             get: function ( ) {
-                return Object.freeze( this.newLinesEndIndex.concat( this.length ) );
+                return this.newLinesEndIndex.concat( this.length );
             },
             enumerable: true
         },
